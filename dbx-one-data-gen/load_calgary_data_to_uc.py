@@ -64,29 +64,33 @@ print(f"✓ Schema '{CATALOG_NAME}.{SCHEMA_NAME}' is ready")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Copy Files from Workspace to DBFS
+# MAGIC ## Create Volume and Copy Files from Workspace
 
 # COMMAND ----------
 
-# Workspace files cannot be directly read by Spark, so we copy them to DBFS first
-temp_dbfs_path = "/tmp/calgary_property_data"
+# Workspace files cannot be directly read by Spark on Express, so we use Unity Catalog Volumes
+VOLUME_NAME = "data_files"
 
-# Create temp directory in DBFS
-dbutils.fs.mkdirs(temp_dbfs_path)
-print(f"Created temporary DBFS directory: {temp_dbfs_path}\n")
+# Create volume if it doesn't exist
+spark.sql(f"CREATE VOLUME IF NOT EXISTS {CATALOG_NAME}.{SCHEMA_NAME}.{VOLUME_NAME}")
+print(f"✓ Volume '{CATALOG_NAME}.{SCHEMA_NAME}.{VOLUME_NAME}' is ready\n")
 
-# Copy CSV files from Workspace to DBFS
-dbfs_csv_files = []
+# Define volume path
+volume_path = f"/Volumes/{CATALOG_NAME}/{SCHEMA_NAME}/{VOLUME_NAME}"
+print(f"Volume path: {volume_path}\n")
+
+# Copy CSV files from Workspace to Volume
+volume_csv_files = []
 for i, workspace_csv_file in enumerate(CSV_FILES, 1):
     file_name = workspace_csv_file.split("/")[-1]
-    dbfs_file_path = f"{temp_dbfs_path}/{file_name}"
+    volume_file_path = f"{volume_path}/{file_name}"
 
-    print(f"Copying {file_name} to DBFS...")
+    print(f"Copying {file_name} to Volume...")
     # Use 'file:' prefix for workspace files
-    dbutils.fs.cp(f"file:{workspace_csv_file}", dbfs_file_path, recurse=False)
-    dbfs_csv_files.append(dbfs_file_path)
+    dbutils.fs.cp(f"file:{workspace_csv_file}", volume_file_path, recurse=False)
+    volume_csv_files.append(volume_file_path)
 
-print(f"\n✓ Copied {len(dbfs_csv_files)} files to DBFS successfully")
+print(f"\n✓ Copied {len(volume_csv_files)} files to Volume successfully")
 
 # COMMAND ----------
 
@@ -98,8 +102,8 @@ print(f"\n✓ Copied {len(dbfs_csv_files)} files to DBFS successfully")
 # Read all CSV parts and combine them
 dfs = []
 
-for i, csv_file in enumerate(dbfs_csv_files, 1):
-    print(f"Reading part {i}/{len(dbfs_csv_files)}: {csv_file}")
+for i, csv_file in enumerate(volume_csv_files, 1):
+    print(f"Reading part {i}/{len(volume_csv_files)}: {csv_file}")
 
     df = spark.read.format("csv") \
         .option("header", "true") \
@@ -187,14 +191,21 @@ display(spark.table(FULL_TABLE_NAME).limit(10))
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Cleanup Temporary Files
+# MAGIC ## Cleanup Volume Files (Optional)
 
 # COMMAND ----------
 
-# Clean up temporary DBFS files
-print(f"Cleaning up temporary files in {temp_dbfs_path}...")
-dbutils.fs.rm(temp_dbfs_path, recurse=True)
-print("✓ Temporary files cleaned up successfully")
+# Optionally clean up CSV files from Volume
+# Note: The files are kept in the Volume by default for future use
+# Uncomment the lines below if you want to delete them after loading
+
+# print(f"Cleaning up CSV files in Volume...")
+# for csv_file in volume_csv_files:
+#     dbutils.fs.rm(csv_file)
+# print("✓ Volume CSV files cleaned up successfully")
+
+print("✓ CSV files retained in Volume for future use")
+print(f"  Location: {volume_path}")
 
 # COMMAND ----------
 
