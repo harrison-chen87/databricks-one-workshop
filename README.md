@@ -1,6 +1,6 @@
 # Databricks One Calgary Guided Tour - November 27 2025
 
-In this workshop, teams will use the [Current Year Property Assessments](https://data.calgary.ca/Government/Current-Year-Property-Assessments-Parcel-/4bsw-nn7w/about_data) to create AI/BI Dashboards and Genie spaces in Databricks. This data contains the assessed values of residential, non-residential and farm land properties in Calgary. The properties in this dataset consist of Calgary lands that have a registered parcel at Alberta’s Land Titles Office. 
+In this workshop, we will use the [Current Year Property Assessments](https://data.calgary.ca/Government/Current-Year-Property-Assessments-Parcel-/4bsw-nn7w/about_data) to create AI/BI Dashboards and Genie spaces in Databricks. This data contains the assessed values of residential, non-residential and farm land properties in Calgary. The properties in this dataset consist of Calgary lands that have a registered parcel at Alberta’s Land Titles Office. 
 
 ### Getting Started
 1. Open your Databricks workspace
