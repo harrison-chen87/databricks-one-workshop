@@ -6,7 +6,7 @@ In this workshop, teams will use the [Current Year Property Assessments](https:/
 1. Open your Databricks workspace
 2. From the Workspace tab, select Create and choose Git folder
    
-   <img width="1719" height="360" alt="image" src="https://github.com/user-attachments/assets/acf48aab-e09e-4eb0-be55-c1afefc0a767" />
+   <img width="1719" height="360" alt="image" src="/Users/harrison.chen/dbx-one-data-gen/assets/git-folder.png" />
    
 4. Enter `https://github.com/harrison-chen87/databricks-one-workshop.git` in the Git repository URL box and click Create Git Folder
 5. You should now have a directory called `databricks-one-workshop`
