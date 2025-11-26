@@ -64,6 +64,33 @@ print(f"✓ Schema '{CATALOG_NAME}.{SCHEMA_NAME}' is ready")
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC ## Copy Files from Workspace to DBFS
+
+# COMMAND ----------
+
+# Workspace files cannot be directly read by Spark, so we copy them to DBFS first
+temp_dbfs_path = "/tmp/calgary_property_data"
+
+# Create temp directory in DBFS
+dbutils.fs.mkdirs(temp_dbfs_path)
+print(f"Created temporary DBFS directory: {temp_dbfs_path}\n")
+
+# Copy CSV files from Workspace to DBFS
+dbfs_csv_files = []
+for i, workspace_csv_file in enumerate(CSV_FILES, 1):
+    file_name = workspace_csv_file.split("/")[-1]
+    dbfs_file_path = f"{temp_dbfs_path}/{file_name}"
+
+    print(f"Copying {file_name} to DBFS...")
+    # Use 'file:' prefix for workspace files
+    dbutils.fs.cp(f"file:{workspace_csv_file}", dbfs_file_path, recurse=False)
+    dbfs_csv_files.append(dbfs_file_path)
+
+print(f"\n✓ Copied {len(dbfs_csv_files)} files to DBFS successfully")
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC ## Read and Aggregate CSV Files
 
 # COMMAND ----------
@@ -71,8 +98,8 @@ print(f"✓ Schema '{CATALOG_NAME}.{SCHEMA_NAME}' is ready")
 # Read all CSV parts and combine them
 dfs = []
 
-for i, csv_file in enumerate(CSV_FILES, 1):
-    print(f"Reading part {i}/{len(CSV_FILES)}: {csv_file}")
+for i, csv_file in enumerate(dbfs_csv_files, 1):
+    print(f"Reading part {i}/{len(dbfs_csv_files)}: {csv_file}")
 
     df = spark.read.format("csv") \
         .option("header", "true") \
@@ -156,6 +183,18 @@ spark.sql(f"DESCRIBE EXTENDED {FULL_TABLE_NAME}").show(truncate=False)
 # Display sample from the registered table
 print("\nSample data from registered table:")
 display(spark.table(FULL_TABLE_NAME).limit(10))
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Cleanup Temporary Files
+
+# COMMAND ----------
+
+# Clean up temporary DBFS files
+print(f"Cleaning up temporary files in {temp_dbfs_path}...")
+dbutils.fs.rm(temp_dbfs_path, recurse=True)
+print("✓ Temporary files cleaned up successfully")
 
 # COMMAND ----------
 
