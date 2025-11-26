@@ -10,9 +10,13 @@ In this workshop, we will use the [Current Year Property Assessments](https://da
    <img width="1728" height="192" alt="git-folder" src="https://github.com/user-attachments/assets/db7cfc80-5bbf-456d-bc64-900320d441c4" />
 
    
-4. Enter `https://github.com/harrison-chen87/databricks-one-workshop.git` in the Git repository URL box and click Create Git Folder
-5. You should now have a directory called `databricks-one-workshop`
-6. Navigate into the setup directory and open the `001-setup` notebook and select `Run all`, the play button in the top right - DO NOT MODIFY THIS NOTEBOOK
+3. Enter `https://github.com/harrison-chen87/databricks-one-workshop.git` in the Git repository URL box and click Create Git Folder
+4. You should now have a directory called `databricks-one-workshop`
+5. Navigate into the `setup` (`dbx-one-data-gen` then to `setup`) directory and open the `001-setup` notebook and select `Run all`, the play button in the top right - DO NOT MODIFY THIS NOTEBOOK
+
+   <img width="1141" height="317" alt="run-all" src="https://github.com/user-attachments/assets/bfee9cb8-2f86-4e94-9393-a159cfb54984" />
+
+
 7. When the notebook is finished running, navigate to the Catalog tab and expand the `calgary_real_estate` catalog and `property_assessments` schema. You should see the newly created tables.
    
   <img width="633" height="425" alt="catalog" src="https://github.com/user-attachments/assets/85c2fab7-8990-4905-adb5-2da0033b78b4" />
