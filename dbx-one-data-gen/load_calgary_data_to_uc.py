@@ -16,11 +16,16 @@
 
 # COMMAND ----------
 
+# Get current user's email dynamically
+# This allows the notebook to work for any user who downloads this from GitHub
+current_user = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
+print(f"Current user: {current_user}")
+
 # Create widgets for parameterization
 dbutils.widgets.text("catalog_name", "calgary_real_estate", "Catalog Name")
 dbutils.widgets.text("schema_name", "property_assessments", "Schema Name")
 dbutils.widgets.text("table_name", "2025_data", "Table Name")
-dbutils.widgets.text("data_path", "/Workspace/Shared/data", "Data Path")
+dbutils.widgets.text("data_path", f"/Workspace/Users/{current_user}/databricks-one-workshop/dbx-one-data-gen/data", "Data Path")
 
 # Get parameter values
 CATALOG_NAME = dbutils.widgets.get("catalog_name")
